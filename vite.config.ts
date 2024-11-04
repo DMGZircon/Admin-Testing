@@ -1,14 +1,15 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      'chart.js': 'chart.js/dist/chart.js',
-    },
-  },
   server: {
-    port: 3000,
+    port: 3000
   },
-});
+  build: {
+    rollupOptions: {
+      external: ['chart.js'] // Add chart.js to external
+    }
+  }
+})

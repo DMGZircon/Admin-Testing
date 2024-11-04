@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Button, TextField } from '@mui/material';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useNavigate } from 'react-router-dom';
 
-// Define interfaces for the data structures
+// Register required components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
 interface AlgorithmData {
     name: string;
     formula: string;
@@ -49,10 +52,10 @@ const AdminPage = () => {
     const fetchAdminData = async () => {
         try {
             const [algorithmsRes, historyRes, topPostsRes, weeklyDataRes] = await Promise.all([
-                axios.get<AlgorithmData[]>('/api/admin/algorithms'),
-                axios.get<HistoryData[]>('/api/admin/history'),
-                axios.get<TopPostData[]>('/api/admin/top-posts'),
-                axios.get<WeeklyPostData>('/api/admin/weekly-posts')
+                axios.get<AlgorithmData[]>('http://localhost:5000/api/admin/algorithms'),
+                axios.get<HistoryData[]>('http://localhost:5000/api/admin/history'),
+                axios.get<TopPostData[]>('http://localhost:5000/api/admin/top-posts'),
+                axios.get<WeeklyPostData>('http://localhost:5000/api/admin/weekly-posts')
             ]);
             setAlgorithms(algorithmsRes.data);
             setHistory(historyRes.data);
@@ -109,16 +112,22 @@ const AdminPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {algorithms.map((alg, index) => (
-                            <TableRow key={index}>
-                                <TableCell>{alg.name}</TableCell>
-                                <TableCell>{alg.formula}</TableCell>
-                                <TableCell>{alg.calculations}</TableCell>
-                                <TableCell>{alg.accuracy}</TableCell>
-                                <TableCell>{alg.precision}</TableCell>
-                                <TableCell>{alg.recall}</TableCell>
+                        {algorithms.length > 0 ? (
+                            algorithms.map((alg, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{alg.name}</TableCell>
+                                    <TableCell>{alg.formula}</TableCell>
+                                    <TableCell>{alg.calculations}</TableCell>
+                                    <TableCell>{alg.accuracy}</TableCell>
+                                    <TableCell>{alg.precision}</TableCell>
+                                    <TableCell>{alg.recall}</TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={6}>No algorithms found.</TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
